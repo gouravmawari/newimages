@@ -4,14 +4,13 @@ const express = require("express")
 const Router = express.Router();
 
 
-Router.post("/join",middleware_multer,async (req,res)=>{
+Router.post("/register",middleware_multer,async (req,res)=>{
     const {username,password} = req.body;
     try{
         const user =  new User({username,password,image:{name:req.file.filename, path:"/space/"}});
         await user.save();
         return res.status(200).json({message:"file has been created"})
     }catch(error){
-        console.log(error);
         return res.status(500).json(error)
     }
 })
@@ -32,7 +31,6 @@ Router.post("/download",async(req,res)=>{
         return res.download(filePath)
 
     }catch(error){
-        console.log(error);
         return res.status(500).json(error)
     }
 })
@@ -45,13 +43,12 @@ Router.post("/login",async(req,res)=>{
         res.status(200).json(user)
     }catch(error){
         console.log(error);
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
 })
 
 Router.post("/upload" ,middleware_multer, async (req, res) => {
     const { user_id } = req.body;
-    // console.log(username);
     try {
         const user = await User.findOneAndUpdate(
             {
@@ -65,7 +62,6 @@ Router.post("/upload" ,middleware_multer, async (req, res) => {
         return res.status(200).json({messsage:"photo uploaded"})
     }
     catch (err) {
-        console.log(err);
         return res.status(505).json(err);
     }
 })
